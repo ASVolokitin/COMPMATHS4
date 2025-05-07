@@ -1,7 +1,7 @@
 
 from decimal import Decimal
 from typing import List
-from backend.models import DataInput
+from backend.utils.http_entities import DataInput
 from sympy import Matrix
 
 from backend.utils.response_constructor import generate_response, generate_response_fail_coefficients

@@ -3,7 +3,7 @@ import numpy as np
 from typing import List, Dict
 
 from backend.solvers.linear_approximation import linear_solve
-from backend.models import DataInput
+from backend.utils.http_entities import DataInput
 from backend.solvers.quadratic_approximation import quadratic_solve
 
 def solve_all(data: DataInput):

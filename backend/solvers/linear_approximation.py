@@ -1,17 +1,10 @@
 from decimal import Decimal
-import math
-from backend.models import DataInput, LinearResultOutput
+from typing import List
+from backend.utils.http_entities import DataInput
 from backend.utils.response_constructor import generate_response, generate_response_fail_coefficients
 from backend.utils.util_entities import ApproximationMethods, ApproximationParameters, ErrorCodes
-from backend.utils.calculation_utils import calculate_determination_coefficient, calculate_e_dots, calculate_mse
 
-
-
-
-def linear_solve(data: DataInput):
-    calculation_success = True
-    errors = []
-
+def calculate_coefficients(data: DataInput) -> List[Decimal]:
     n = len(data.x)
     sx = Decimal(sum(data.x))
     sy = Decimal(sum(data.y))
@@ -22,14 +15,28 @@ def linear_solve(data: DataInput):
     delta_1 = sxy * n - sx * sy
     delta_2 = sxx * sy - sx * sxy
 
-    if delta == 0:
+    if delta == 0: return None
+        
+    a = delta_1/delta
+    b = delta_2/delta
+
+    return [a, b]
+
+
+def linear_solve(data: DataInput):
+    calculation_success = True
+    errors = []
+
+    coefficients = calculate_coefficients(data)
+
+    if coefficients == None:
         calculation_success = False
         errors.append(ErrorCodes.UNABLE_TO_CALCULATE_COEFFICIENTS)
         return generate_response_fail_coefficients(data=data)
+    else:
+        a, b = coefficients[0], coefficients[1]
+
     
-    a = delta_1/delta
-    b = delta_2/delta
-    coefficients = [a, b]
     linear_phi = lambda x: Decimal(a * Decimal(x) + b)
 
     parameters = ApproximationParameters(data=data,
