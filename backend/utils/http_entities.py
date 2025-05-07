@@ -17,6 +17,7 @@ class ResultOutput(BaseModel):
     phi_dots: List[Decimal]
     e_dots: List[Decimal]
     coefficient_of_determination: Decimal
+    best_approximation: bool
     calculation_success: bool
     errors: List[str]
 

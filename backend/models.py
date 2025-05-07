@@ -17,6 +17,7 @@ class ResultOutput(BaseModel):
     phi_dots: List[Decimal]
     e_dots: List[Decimal]
     coefficient_of_determination: Decimal
+    best_approximation: bool
     calculation_success: bool
     errors: List[str]
 
@@ -43,6 +44,7 @@ class ResultOutput(BaseModel):
             phi_dots=[phi(x) for x in data.x] if phi is not None else [],
             e_dots=e_dots,
             coefficient_of_determination=coefficient_of_determination,
+            best_approximation=False,
             calculation_success=calculation_success,
             errors=errors
         )
@@ -74,6 +76,7 @@ class LinearResultOutput(ResultOutput):
             e_dots=e_dots,
             coefficient_of_determination=coefficient_of_determination,
             correlation_coefficient=correlation_coefficient,
+            best_approximation=False,
             calculation_success=calculation_success,
             errors=errors
         )
