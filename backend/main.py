@@ -1,8 +1,9 @@
+from typing import Dict, List
+from backend.models import DataInput, ResultOutput
 from fastapi import FastAPI, UploadFile, File
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from backend.models import DataInput, ResultOutput
 from backend.solver import solve_approximation
 
 app = FastAPI()
@@ -20,7 +21,7 @@ app.add_middleware(
 async def read_index():
     return FileResponse("frontend/index.html")
 
-@app.post("/approximate", response_model=ResultOutput)
+@app.post("/approximate", response_model=Dict[str, ResultOutput])
 async def approximate(data: DataInput):
-    result = solve_approximation(data.x, data.y)
+    result = solve_approximation(data)
     return result
