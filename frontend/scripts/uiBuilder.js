@@ -69,7 +69,7 @@ export function createApproximationBlock(method, data) {
     renderGraph(graphCanvas, data.x_for_graph, data.y_for_graph, data.x, data.y);
 
     const paramsTable = document.createElement('table');
-    paramsTable.className = 'params-table'; // Для стилизации таблицы
+    paramsTable.className = 'params-table';
 
     const tbody = document.createElement('tbody');
     
@@ -78,14 +78,14 @@ export function createApproximationBlock(method, data) {
             const row = document.createElement('tr');
             
             const cellKey = document.createElement('td');
-            cellKey.className = 'param-key'; // Добавим классы для стилизации
+            cellKey.className = 'param-key'; 
             cellKey.textContent = key;
             row.appendChild(cellKey);
 
             const cellValue = document.createElement('td');
-            cellValue.className = 'param-value'; // Классы для стилизации
+            cellValue.className = 'param-value';
 
-            let formattedValue = value; // Меняем с const на let для возможности изменения
+            let formattedValue = value; 
 
             if (Array.isArray(formattedValue)) {
                 formattedValue = formattedValue.map(item => (typeof item === 'number') ? parseFloat(item.toFixed(10)) : item);
@@ -101,7 +101,6 @@ export function createApproximationBlock(method, data) {
                 continue;
             }
             
-
             if (Array.isArray(formattedValue)) {
                 if (key.toLowerCase() === "errors") {
                     formattedValue = formattedValue.join('\n\n');
@@ -123,7 +122,15 @@ export function createApproximationBlock(method, data) {
     return wrapper;
 }
 
+function interpretDetermination(val) {
+    const num = parseFloat(val);
+    if (isNaN(num)) return '';
 
+    if (num >= 0.95) return 'Отличное приближение';
+    if (num >= 0.85) return 'Хорошее приближение';
+    if (num >= 0.7) return 'Среднее приближение';
+    return 'Слабое приближение';
+}
 
 
 export function generateTable() {

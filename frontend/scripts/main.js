@@ -1,7 +1,12 @@
 import {sendData} from './http.js'
+import {handleFileUpload} from './file.js'
+import {validateInputs} from './validateInput.js'
 import { createApproximationBlock, generateTable, createTabs } from './uiBuilder.js';
 
 document.getElementById('sendButton').addEventListener('click', async () => {
+    if (!validateInputs()) {
+        return;
+    }
     const response = await sendData();
 
     const container = document.getElementById('resultContainer');
@@ -21,6 +26,12 @@ document.getElementById('sendButton').addEventListener('click', async () => {
 
 document.getElementById('points-count').addEventListener('change', async () => {
     generateTable();
+});
+
+document.getElementById('fileInput').addEventListener('change', handleFileUpload);
+
+document.getElementById('fileUploadBtn').addEventListener('click', () => {
+    document.getElementById('fileInput').click();
 });
 
 window.onload = generateTable;

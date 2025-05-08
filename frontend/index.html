@@ -14,7 +14,7 @@
     <div class="main-container" id="mainContainer">
         <div id="inputSection">
             <div class="point-count-selector-container">
-                <label for="points-count">Количество точек:</label>
+                <label for="points-count">Points amount:</label>
                 <select id="points-count">
                     <option value="8" selected>8</option>
                     <option value="9">9</option>
@@ -33,8 +33,15 @@
                 <tbody>
                 </tbody>
             </table>
-    
-            <button id="sendButton">Рассчитать</button>
+            
+            <div class="button-container">
+                <button id="sendButton" class="button">Calculate</button>
+                <div class="file-upload-wrapper">
+                    <input type="file" id="fileInput" accept=".txt,.csv"  class="button" hidden />
+                    <button id="fileUploadBtn" class="button">From file</button>
+                </div>
+            </div>
+           
         </div>
     
         <div id="resultContainer"></div>

@@ -5,14 +5,14 @@ export function renderGraph(canvas, x, y, originalX, originalY) {
             labels: x,
             datasets: [
                 {
-                    label: 'Аппроксимация',
+                    label: 'Approximation',
                     data: y,
                     borderColor: 'blue',
                     tension: 0.3,
                     pointRadius: 0,
                 },
                 {
-                    label: 'Исходные точки',
+                    label: 'Input points',
                     data: originalY.map((val, index) => ({ x: originalX[index], y: val })),
                     borderColor: 'transparent',
                     backgroundColor: 'red',
