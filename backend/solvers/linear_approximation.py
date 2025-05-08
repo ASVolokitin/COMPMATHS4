@@ -32,7 +32,7 @@ def linear_solve(data: DataInput):
     if coefficients == None:
         calculation_success = False
         errors.append(ErrorCodes.UNABLE_TO_CALCULATE_COEFFICIENTS)
-        return generate_response_fail_coefficients(data=data)
+        return generate_response_fail_coefficients(data=data, errors=errors)
     else:
         a, b = coefficients[0], coefficients[1]
 

@@ -43,7 +43,7 @@ def quadratic_solve(data: DataInput):
         coefficients = []
         calculation_success = False
         errors.append(ErrorCodes.UNABLE_TO_CALCULATE_COEFFICIENTS)
-        return generate_response_fail_coefficients(data)
+        return generate_response_fail_coefficients(data, errors=errors)
     
     quadratic_phi = lambda x: coefficients[0] + coefficients[1] * x + coefficients[2] * x * x
 

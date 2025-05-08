@@ -13,11 +13,10 @@ def calculate_determination_coefficient(X, Y, phi: Callable[[Decimal], Decimal])
         for i in range(len(X)):
             numerator += (Y[i] - phi(X[i]))
             denominator += (Y[i] - mean_phi)
-            print(f"Numerator: {numerator}, denominator: {denominator}")
         
         if denominator != 0: return 1 - numerator / denominator
         else: return 1
-    except (ValueError, ZeroDivisionError):
+    except (ValueError, ZeroDivisionError, OverflowError):
         return None
 
 
@@ -29,7 +28,7 @@ def calculate_e_dots(X: List[Decimal], Y: List[Decimal], phi: Callable[[Decimal]
             e_dots.append(e_i)
         
         return e_dots
-    except (ValueError, ZeroDivisionError):
+    except (ValueError, ZeroDivisionError, OverflowError):
         return None
 
 def calculate_mse(X: List[Decimal], Y: List[Decimal], phi: Callable[[Decimal], Decimal]):
@@ -40,7 +39,7 @@ def calculate_mse(X: List[Decimal], Y: List[Decimal], phi: Callable[[Decimal], D
             numerator += (phi(X[i]) - Y[i])**2
         
         return math.sqrt(numerator/len(X))
-    except (ValueError, ZeroDivisionError):
+    except (ValueError, ZeroDivisionError, OverflowError):
         return None
 
 def calculate_pearson(X, Y):
@@ -61,5 +60,5 @@ def calculate_pearson(X, Y):
         if denominator_X != 0 and denominator_Y != 0:
             return numerator / Decimal(math.sqrt(denominator_X * denominator_Y))
         else: return None
-    except (ValueError, ZeroDivisionError):
+    except (ValueError, ZeroDivisionError, OverflowError):
         return None

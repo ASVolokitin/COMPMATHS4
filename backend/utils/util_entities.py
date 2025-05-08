@@ -1,6 +1,6 @@
 from decimal import Decimal
 from typing import Callable, List
-from backend.models import DataInput
+from backend.utils.http_entities import DataInput
 from enum import Enum
 from backend.utils.calculation_utils import calculate_determination_coefficient, calculate_e_dots, calculate_mse, calculate_pearson
 
@@ -9,6 +9,7 @@ class ErrorCodes(str, Enum):
     UNABLE_TO_CALCULATE_MSE="Couldn't calculate mean squared error."
     UNABLE_TO_CALCULATE_DETERMINATION="Couldn't calculate the coefficient of determination."
     UNABLE_TO_CALCULATE_CORRELATION="Couldn't calculate Pearson correlation coefficient."
+    UNABLE_TO_CALCULATE_GRAPH_POINTS="Couldn't calculate graph points."
 
 class ApproximationMethods(str, Enum):
     LINEAR="linear"
@@ -27,6 +28,7 @@ class ApproximationParameters():
         self.phi=phi
         self.mse=0
         self.coefficient_of_determination=0,
+        self.correlation_coefficient = None,
         self.e_dots=[]
         self.calculation_success=calculation_success
         self.errors=errors

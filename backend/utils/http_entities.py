@@ -9,14 +9,14 @@ class DataInput(BaseModel):
 
 class ResultOutput(BaseModel):
     coefficients: List[Decimal]
-    mse: Decimal
+    mse: str
     x: List[Decimal]
     y: List[Decimal]
     x_for_graph: List[Decimal]
     y_for_graph: List[Decimal]
     phi_dots: List[Decimal]
     e_dots: List[Decimal]
-    coefficient_of_determination: Decimal
+    coefficient_of_determination: str
     best_approximation: bool
     calculation_success: bool
     errors: List[str]
@@ -33,23 +33,30 @@ class ResultOutput(BaseModel):
         calculation_success,
         errors
     ):
-        graph_info = generate_graph_points(data.x, phi)
+        graph_info = generate_graph_points(data.x, phi, errors)
+        # if graph_info is None:
+        #     errors.append(ErrorCodes.UNABLE_TO_CALCULATE_GRAPH_POINTS)
+        #     calculation_success=False
+        #     graph_info[0], graph_info[1] = [[], []]
+
+        
         return cls(
             coefficients=coefficients,
-            mse=mse,
+            mse=str(mse),
             x=data.x,
             y=data.y,
-            x_for_graph=graph_info[0],
-            y_for_graph=graph_info[1],
+            x_for_graph=graph_info[0] if graph_info is not None else [],
+            y_for_graph=graph_info[1] if graph_info is not None else [],
             phi_dots=[phi(x) for x in data.x] if phi is not None else [],
             e_dots=e_dots,
-            coefficient_of_determination=coefficient_of_determination,
-            calculation_success=calculation_success,
+            coefficient_of_determination=str(coefficient_of_determination),
+            calculation_success=str(calculation_success),
+            best_approximation=False,
             errors=errors
         )
 
 class LinearResultOutput(ResultOutput):
-    correlation_coefficient: Decimal
+    correlation_coefficient: str
     @classmethod
     def create(
         cls,
@@ -63,18 +70,19 @@ class LinearResultOutput(ResultOutput):
         calculation_success,
         errors
     ):
-        graph_info = generate_graph_points(data.x, phi)
+        graph_info = generate_graph_points(data.x, phi, errors)
         return cls(
             coefficients=coefficients,
-            mse=mse,
+            mse=str(mse),
             x=data.x,
             y=data.y,
-            x_for_graph=graph_info[0],
-            y_for_graph=graph_info[1],
+            x_for_graph=graph_info[0] if graph_info is not None else [],
+            y_for_graph=graph_info[1] if graph_info is not None else [],
             phi_dots=[phi(x) for x in data.x] if phi is not None else [],
             e_dots=e_dots,
-            coefficient_of_determination=coefficient_of_determination,
-            correlation_coefficient=correlation_coefficient,
+            coefficient_of_determination=str(coefficient_of_determination),
+            correlation_coefficient=str(correlation_coefficient),
             calculation_success=calculation_success,
+            best_approximation=False,
             errors=errors
         )

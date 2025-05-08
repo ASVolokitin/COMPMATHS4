@@ -25,19 +25,19 @@ def calculate_coefficients(data: DataInput) -> List[Decimal]:
     return [a, b]
 
 
-def exponential_solve(data: DataInput):
+def logarithmic_solve(data: DataInput):
     calculation_success = True
     errors = []
 
-    if not all(y > 0 for y in data.y):
-        errors.append("All Y values must be greater than 0.")
+    if not all(x > 0 for x in data.x):
+        errors.append("All X values must be greater than 0.")
         calculation_success = False
         return generate_response_fail_coefficients(data=data, errors=errors)
     
-    log_y = list(map(math.log, data.y))
-    exp_data = DataInput(x=data.x, y=log_y)
+    log_x = list(map(math.log, data.x))
+    log_data = DataInput(x=log_x, y=data.y)
 
-    coefficients = calculate_coefficients(exp_data)
+    coefficients = calculate_coefficients(log_data)
 
     if coefficients == None:
         calculation_success = False
@@ -45,15 +45,14 @@ def exponential_solve(data: DataInput):
         return generate_response_fail_coefficients(data=data, errors=errors)
     else:
         coefficients = [Decimal(a_i) for a_i in coefficients]
+    
+    logarithmic_phi = lambda x: coefficients[0] + coefficients[1] * Decimal(math.log(x))
 
-    coefficients[0] = Decimal(math.exp(coefficients[0]))
-
-    exponential_phi = lambda x: coefficients[0] * Decimal(math.exp(coefficients[1] * x))
 
     parameters = ApproximationParameters(data=data,
-                                         method=ApproximationMethods.EXPONENTIAL,
+                                         method=ApproximationMethods.LOGARITHMIC,
                                          coefficients=coefficients,
-                                         phi=exponential_phi,
+                                         phi=logarithmic_phi,
                                          calculation_success=calculation_success,
                                          errors=errors)
     parameters.calculate()
