@@ -9,14 +9,14 @@ class DataInput(BaseModel):
 
 class ResultOutput(BaseModel):
     coefficients: List[Decimal]
-    mse: str
+    mse: Decimal
     x: List[Decimal]
     y: List[Decimal]
     x_for_graph: List[Decimal]
     y_for_graph: List[Decimal]
     phi_dots: List[Decimal]
     e_dots: List[Decimal]
-    coefficient_of_determination: str
+    coefficient_of_determination: Decimal
     best_approximation: bool
     calculation_success: bool
     errors: List[str]
@@ -34,11 +34,7 @@ class ResultOutput(BaseModel):
         errors
     ):
         graph_info = generate_graph_points(data.x, phi, errors)
-        # if graph_info is None:
-        #     errors.append(ErrorCodes.UNABLE_TO_CALCULATE_GRAPH_POINTS)
-        #     calculation_success=False
-        #     graph_info[0], graph_info[1] = [[], []]
-
+        if graph_info is None: calculation_success = False
         
         return cls(
             coefficients=coefficients,
@@ -54,9 +50,26 @@ class ResultOutput(BaseModel):
             best_approximation=False,
             errors=errors
         )
+    
+    @classmethod
+    def create_empty(cls, data, errors):
+        return cls(
+            coefficients=[],
+            mse=-1,
+            x=data.x,
+            y=data.y,
+            x_for_graph= [],
+            y_for_graph=[],
+            phi_dots=[],
+            e_dots=[],
+            coefficient_of_determination=0,
+            calculation_success=False,
+            best_approximation=False,
+            errors=errors
+        )
 
 class LinearResultOutput(ResultOutput):
-    correlation_coefficient: str
+    correlation_coefficient: Decimal
     @classmethod
     def create(
         cls,
@@ -73,15 +86,15 @@ class LinearResultOutput(ResultOutput):
         graph_info = generate_graph_points(data.x, phi, errors)
         return cls(
             coefficients=coefficients,
-            mse=str(mse),
+            mse=mse,
             x=data.x,
             y=data.y,
             x_for_graph=graph_info[0] if graph_info is not None else [],
             y_for_graph=graph_info[1] if graph_info is not None else [],
             phi_dots=[phi(x) for x in data.x] if phi is not None else [],
             e_dots=e_dots,
-            coefficient_of_determination=str(coefficient_of_determination),
-            correlation_coefficient=str(correlation_coefficient),
+            coefficient_of_determination=coefficient_of_determination,
+            correlation_coefficient=correlation_coefficient,
             calculation_success=calculation_success,
             best_approximation=False,
             errors=errors

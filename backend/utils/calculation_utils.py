@@ -2,6 +2,8 @@ from decimal import Decimal
 import math
 from typing import Callable, List
 
+from backend.utils.http_entities import DataInput
+
 
 def calculate_determination_coefficient(X, Y, phi: Callable[[Decimal], Decimal]):
     try:
@@ -62,3 +64,21 @@ def calculate_pearson(X, Y):
         else: return None
     except (ValueError, ZeroDivisionError, OverflowError):
         return None
+    
+def calculate_linear_coefficients(data: DataInput) -> List[Decimal]:
+    n = len(data.x)
+    sx = Decimal(sum(data.x))
+    sy = Decimal(sum(data.y))
+    sxx = sum(Decimal(x)*Decimal(x) for x in data.x)
+    sxy = sum(Decimal(x) * Decimal(y) for x, y in zip(data.x, data.y))
+
+    delta = sxx * n - sx * sx
+    delta_1 = sxy * n - sx * sy
+    delta_2 = sxx * sy - sx * sxy
+
+    if delta == 0: return None
+        
+    a = delta_1/delta
+    b = delta_2/delta
+
+    return [a, b]

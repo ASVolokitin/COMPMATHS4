@@ -1,33 +1,34 @@
 from decimal import Decimal
 from typing import List
+from backend.utils.calculation_utils import calculate_linear_coefficients
 from backend.utils.http_entities import DataInput
 from backend.utils.response_constructor import generate_response, generate_response_fail_coefficients
 from backend.utils.util_entities import ApproximationMethods, ApproximationParameters, ErrorCodes
 
-def calculate_coefficients(data: DataInput) -> List[Decimal]:
-    n = len(data.x)
-    sx = Decimal(sum(data.x))
-    sy = Decimal(sum(data.y))
-    sxx = sum(Decimal(x)*Decimal(x) for x in data.x)
-    sxy = sum(Decimal(x) * Decimal(y) for x, y in zip(data.x, data.y))
+# def calculate_coefficients(data: DataInput) -> List[Decimal]:
+#     n = len(data.x)
+#     sx = Decimal(sum(data.x))
+#     sy = Decimal(sum(data.y))
+#     sxx = sum(Decimal(x)*Decimal(x) for x in data.x)
+#     sxy = sum(Decimal(x) * Decimal(y) for x, y in zip(data.x, data.y))
 
-    delta = sxx * n - sx * sx
-    delta_1 = sxy * n - sx * sy
-    delta_2 = sxx * sy - sx * sxy
+#     delta = sxx * n - sx * sx
+#     delta_1 = sxy * n - sx * sy
+#     delta_2 = sxx * sy - sx * sxy
 
-    if delta == 0: return None
+#     if delta == 0: return None
         
-    a = delta_1/delta
-    b = delta_2/delta
+#     a = delta_1/delta
+#     b = delta_2/delta
 
-    return [a, b]
+#     return [a, b]
 
 
 def linear_solve(data: DataInput):
     calculation_success = True
     errors = []
 
-    coefficients = calculate_coefficients(data)
+    coefficients = calculate_linear_coefficients(data)
 
     if coefficients == None:
         calculation_success = False

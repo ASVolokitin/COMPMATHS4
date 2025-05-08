@@ -26,35 +26,41 @@ from backend.utils.util_entities import ApproximationMethods, ApproximationParam
 #     return [a, b]
 
 
-def exponential_solve(data: DataInput):
+def power_solve(data: DataInput):
     calculation_success = True
     errors = []
 
+    if not all(x > 0 for x in data.x):
+        errors.append("All X values must be greater than 0.")
+        calculation_success = False
+        return generate_response_fail_coefficients(data=data, errors=errors)
+    
     if not all(y > 0 for y in data.y):
         errors.append("All Y values must be greater than 0.")
         calculation_success = False
         return generate_response_fail_coefficients(data=data, errors=errors)
     
+    log_x = list(map(math.log, data.x))
     log_y = list(map(math.log, data.y))
-    exp_data = DataInput(x=data.x, y=log_y)
+    log_data = DataInput(x=log_x, y=log_y)
 
-    coefficients = calculate_linear_coefficients(exp_data)
+    coefficients = calculate_linear_coefficients(log_data)
 
     if coefficients == None:
         calculation_success = False
         errors.append(ErrorCodes.UNABLE_TO_CALCULATE_COEFFICIENTS)
         return generate_response_fail_coefficients(data=data, errors=errors)
     else:
+        coefficients[0] = math.exp(coefficients[0])
         coefficients = [Decimal(a_i) for a_i in coefficients]
+    
+    power_phi = lambda x: coefficients[0] * x**coefficients[1]
 
-    coefficients[0] = Decimal(math.exp(coefficients[0]))
-
-    exponential_phi = lambda x: coefficients[0] * Decimal(math.exp(coefficients[1] * x))
 
     parameters = ApproximationParameters(data=data,
-                                         method=ApproximationMethods.EXPONENTIAL,
+                                         method=ApproximationMethods.POWER,
                                          coefficients=coefficients,
-                                         phi=exponential_phi,
+                                         phi=power_phi,
                                          calculation_success=calculation_success,
                                          errors=errors)
     parameters.calculate()
