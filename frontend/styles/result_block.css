@@ -1,13 +1,22 @@
 #resultContainer {
+    min-width: 800px;
     max-width: 800px;
-    margin: 2rem auto;
+    /* margin: 2rem auto; */
     padding: 1.5rem 2rem;
     background: #ffffff;
     border-radius: 16px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+    opacity: 0;
     font-family: "Segoe UI", sans-serif;
-    transition: transform 0.3s ease;
+    transition: all 0.4s ease;
+    overflow: hidden;
+    white-space: pre-line;
 }
+
+.main-container.has-result #resultContainer {
+    opacity: 1;
+    justify-content: space-between;
+  }
 
 
 .tab-nav {
@@ -140,9 +149,21 @@ canvas {
     color: #FFF;
 }
 
+.tab-nav button.failed-tab {
+    background-color: #d21c1c;
+    border-color: #d21c1c;
+    color: #FFF;
+}
+
 .tab-nav button.best-tab.active {
     background-color: #84b686;
     border-color: #84b686;
+    color: #FFF;
+}
+
+.tab-nav button.failed-tab.active {
+    background-color: #d21c1c;
+    border-color: #d21c1c;
     color: #FFF;
 }
 
@@ -150,4 +171,11 @@ canvas {
 .tab-nav button.best-tab:hover {
     background-color: #84bfff;
     border-color: #84bfff;
+}
+
+.tab-nav button.failed-tab:hover {
+    background-color: #ad0f0f;
+    border-color: #ad0f0f;
+    transform: scale(1.05);
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }

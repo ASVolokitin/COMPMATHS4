@@ -4,15 +4,21 @@ async function sendData() {
     const x = [];
     const y = [];
 
+    
+    document.getElementById('resultContainer').classList.add('invisible');
+
     for (const row of rows) {
         const inputs = row.querySelectorAll('input');
         const xi = parseFloat(inputs[0].value);
         const yi = parseFloat(inputs[1].value);
 
         if (isNaN(xi) || isNaN(yi)) {
+            document.getElementById('mainContainer').classList.remove('has-result');
             alert('Пожалуйста, заполните все поля корректными числами.');
             return;
         }
+
+        document.getElementById("resultContainer").classList.remove("shutdown");
 
         x.push(xi);
         y.push(yi);

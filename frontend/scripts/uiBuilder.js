@@ -40,6 +40,11 @@ export function createTabs(container, tabData) {
             btn.classList.add('best-tab');
         }
 
+        console.log(tab);
+        if (tab.isSuccessful == false) {
+            btn.classList.add('failed-tab');
+        }
+
         nav.appendChild(btn);
 
         if (index === 0) {
@@ -95,9 +100,14 @@ export function createApproximationBlock(method, data) {
             if (key.toLowerCase() === "errors" && !formattedValue) {
                 continue;
             }
+            
 
             if (Array.isArray(formattedValue)) {
-                formattedValue = formattedValue.join(', ');
+                if (key.toLowerCase() === "errors") {
+                    formattedValue = formattedValue.join('\n\n');
+                    console.log(formattedValue);
+                }
+                else formattedValue = formattedValue.join(', ');
             }
 
             cellValue.textContent = formattedValue;

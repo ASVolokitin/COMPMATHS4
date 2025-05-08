@@ -6,7 +6,6 @@
 
 #inputSection {
     max-width: 400px;
-    margin: 2rem auto;
     padding: 1.5rem 2rem;
     border-radius: 16px;
     background: #f9f9fb;
@@ -95,3 +94,18 @@
     background-color: #fff;
     box-shadow: 0 0 0 2px #007bff55;
 }
+
+#inputSection {
+    transition: transform 0.6s ease;
+  }
+  
+  .main-container:not(.has-result) #inputSection {
+    position: absolute;
+    right: 50%;
+    transform: translateX(50%);
+  }
+  
+  .main-container.has-result #inputSection {
+    right: 50%;
+    transform: translateX(0%);
+  }

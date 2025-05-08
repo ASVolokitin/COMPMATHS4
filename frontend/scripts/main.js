@@ -10,8 +10,10 @@ document.getElementById('sendButton').addEventListener('click', async () => {
 
     for (const [method, data] of Object.entries(response)) {
         const block = createApproximationBlock(method, data);
-        tabData.push({ title: method, content: block });
+        tabData.push({ title: method, content: block, isBest: data.best_approximation, isSuccessful: data.calculation_success });
         console.log(data);
+        document.getElementById('mainContainer').classList.add('has-result');
+        document.getElementById('resultContainer').classList.remove('invisible');
     }
 
     createTabs(container, tabData);
