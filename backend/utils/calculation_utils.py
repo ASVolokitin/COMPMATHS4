@@ -13,11 +13,11 @@ def calculate_determination_coefficient(X, Y, phi: Callable[[Decimal], Decimal])
         mean_phi = sum(phi(x) for x in X)/len(X)
 
         for i in range(len(X)):
-            numerator += (Y[i] - phi(X[i]))
-            denominator += (Y[i] - mean_phi)
+            numerator += (Y[i] - phi(X[i]))**2
+            denominator += (Y[i] - mean_phi)**2
         
         if denominator != 0: return 1 - numerator / denominator
-        else: return 1
+        else: return None
     except (ValueError, ZeroDivisionError, OverflowError):
         return None
 
@@ -36,7 +36,6 @@ def calculate_e_dots(X: List[Decimal], Y: List[Decimal], phi: Callable[[Decimal]
 def calculate_mse(X: List[Decimal], Y: List[Decimal], phi: Callable[[Decimal], Decimal]):
     try:
         numerator = 0
-
         for i in range(len(X)):
             numerator += (phi(X[i]) - Y[i])**2
         

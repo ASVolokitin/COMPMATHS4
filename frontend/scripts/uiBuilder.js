@@ -1,8 +1,8 @@
-import { renderGraph } from './graphRenderer.js';   
+import { renderGraph } from './graphRenderer.js';  
+import { saveJsonToFile } from './file.js'
 
 export function createTabs(container, tabData) {
 
-    console.log(tabData);
     const nav = document.createElement('div');
     nav.className = 'tab-nav';
 
@@ -62,9 +62,12 @@ export function createTabs(container, tabData) {
 export function createApproximationBlock(method, data) {
     const wrapper = document.createElement('div');
 
+    const canvasContainer = document.createElement('div');
+    canvasContainer.style.height="500px";
     const graphCanvas = document.createElement('canvas');
     graphCanvas.id = `graph-${method}`;
-    wrapper.appendChild(graphCanvas);
+    canvasContainer.appendChild(graphCanvas)
+    wrapper.appendChild(canvasContainer);
     
     renderGraph(graphCanvas, data.x_for_graph, data.y_for_graph, data.x, data.y);
 
@@ -74,23 +77,29 @@ export function createApproximationBlock(method, data) {
     const tbody = document.createElement('tbody');
     
     for (const [key, value] of Object.entries(data)) {
-        if (key !== 'x_for_graph' && key !== 'y_for_graph' && !key.endsWith("_dots")) {
+        if (key !== 'x_for_graph' && key !== 'y_for_graph' && key !=='phi_dots') {
             const row = document.createElement('tr');
             
-            const cellKey = document.createElement('td');
+            let cellKey = document.createElement('td');
             cellKey.className = 'param-key'; 
-            cellKey.textContent = key;
+            cellKey.textContent = key.replace(/_/g, " ");
+            if (key === "mse") cellKey.textContent = cellKey.textContent.toUpperCase();
             row.appendChild(cellKey);
 
             const cellValue = document.createElement('td');
             cellValue.className = 'param-value';
 
             let formattedValue = value; 
+            if (key ==="x" || key === "y" || key === "coefficients") {
+                if (Array.isArray(formattedValue)) {
+                    formattedValue = formattedValue.map(item => (typeof Decimal(item).toNumber() === 'number') ? parseFloat(Decimal(item).toNumber().toFixed(10)) : item);
+                } else if (typeof formattedValue === 'number') {
+                    formattedValue = parseFloat(formattedValue.toFixed(10));
+                }
+            }
 
-            if (Array.isArray(formattedValue)) {
-                formattedValue = formattedValue.map(item => (typeof item === 'number') ? parseFloat(item.toFixed(10)) : item);
-            } else if (typeof formattedValue === 'number') {
-                formattedValue = parseFloat(formattedValue.toFixed(10));
+            if (key === "e_dots") {
+                formattedValue = formattedValue.map(item => (typeof Decimal(item).toNumber() === 'number') ? parseFloat(Decimal(item).toNumber().toFixed(20)) : item);
             }
 
             if (formattedValue === "" || formattedValue === null || formattedValue === undefined || (Array.isArray(value) && value.length === 0)) {
@@ -100,38 +109,63 @@ export function createApproximationBlock(method, data) {
             if (key.toLowerCase() === "errors" && !formattedValue) {
                 continue;
             }
-            
+
             if (Array.isArray(formattedValue)) {
                 if (key.toLowerCase() === "errors") {
                     formattedValue = formattedValue.join('\n\n');
-                    console.log(formattedValue);
+                }
+                else if (key.toLowerCase() === "e_dots") {
+                    formattedValue = "• " + formattedValue.join('\n• ');
                 }
                 else formattedValue = formattedValue.join(', ');
             }
 
-            cellValue.textContent = formattedValue;
+            if (key.toLowerCase() == "coefficient_of_determination") {
+                cellValue.innerHTML = `
+                    <div class="result-value-container">
+                        <a class='result-value'>${formattedValue}</a>
+                        <a class='underline-value'>${interpretDetermination(formattedValue)}</a>
+                    </div>
+                    `;
+                    cellValue.style.display = 'contents';
+                    cellValue.style.gap = '5px';
+            }
+            else cellValue.textContent = formattedValue;
+            console.log(cellValue);
             row.appendChild(cellValue);
 
             tbody.appendChild(row);
         }
     }
 
+    
+
     paramsTable.appendChild(tbody);
     wrapper.appendChild(paramsTable);
+
+    const saveBtn = document.createElement('button');
+    saveBtn.id = 'save-results';
+    saveBtn.style.marginTop='20px';
+    saveBtn.class ='button';
+    saveBtn.className = 'button';
+    saveBtn.textContent = 'Save result';
+    saveBtn.addEventListener('click', () => saveJsonToFile(method, data));
+
+    wrapper.appendChild(saveBtn);
     
     return wrapper;
 }
 
 function interpretDetermination(val) {
-    const num = parseFloat(val);
+    const num = new Decimal(val).toNumber();
     if (isNaN(num)) return '';
-
-    if (num >= 0.95) return 'Отличное приближение';
-    if (num >= 0.85) return 'Хорошее приближение';
-    if (num >= 0.7) return 'Среднее приближение';
-    return 'Слабое приближение';
+    if (num == 1) return "Amazing result!";
+    if (num >= 0.95) return 'High precision approximation';
+    if (num >= 0.75) return 'Satisfactory approximation';
+    if (num >= 0.5) return 'Weak approximation';
+    if (num == -1) return "It is impossible to approximate these points with this function";
+    return 'Model requires modification, approximation accuracy is inadequate';
 }
-
 
 export function generateTable() {
     const count = parseInt(document.getElementById('points-count').value, 10);

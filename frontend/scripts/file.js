@@ -6,13 +6,16 @@ export function handleFileUpload(event) {
     reader.onload = function(e) {
         const content = e.target.result;
         const lines = content.trim().split('\n');
-        const data = lines.map(line => line.replace(',', '.').split(/[ ;\t]+/).map(Number));
+        const data = lines.map(line => line.replace(',', '.').trim().split(/[ ;\t]+/).map(Number));
 
         const validData = data.filter(pair => pair.length === 2 && !isNaN(pair[0]) && !isNaN(pair[1]));
         if (validData.length === 0) {
-            alert("Файл не содержит корректных чисел.");
+            alert("Incorrect input format");
             return;
         }
+
+        console.log(data);
+        console.log(validData);
 
         fillTableWithData(validData);
     };
@@ -21,6 +24,7 @@ export function handleFileUpload(event) {
 }
 
 function fillTableWithData(data) {
+    
     const tbody = document.getElementById('data-table').querySelector('tbody');
     tbody.innerHTML = '';
 
@@ -49,4 +53,19 @@ function fillTableWithData(data) {
         row.appendChild(cellY);
         tbody.appendChild(row);
     });
+}
+
+export function saveJsonToFile(method, data) {
+    const { x_for_graph, y_for_graph, ...filteredData } = data;
+
+    const jsonString = JSON.stringify(filteredData, null, 4); 
+    const blob = new Blob([jsonString], { type: 'application/json' });
+
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = method;
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 }

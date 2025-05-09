@@ -6,11 +6,18 @@
     <link rel="stylesheet" href="static/styles/styles.css">
     <link rel="stylesheet" href="static/styles/input_table.css">
     <link rel="stylesheet" href="static/styles/result_block.css">
+    <script src="static/scripts/hammer.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1/dist/chartjs-plugin-zoom.min.js"></script>
+    <script>Chart.register(ChartZoom);</script>
     <script type="module" src="/static/scripts/main.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/decimal.js@10.4.3/decimal.min.js"></script>
+
 </head>
 <body>
-    <h1>Добро пожаловать в программу Никиты Копытова</h1>
+    <!-- <h1>Добро пожаловать в программу Никиты Копытова</h1> -->
     <div class="main-container" id="mainContainer">
         <div id="inputSection">
             <div class="point-count-selector-container">
@@ -44,7 +51,9 @@
            
         </div>
     
-        <div id="resultContainer"></div>
+        <div id="resultContainer">
+            <button id="save-results">Save to PDF</button>
+        </div>
     </section>
 </body>
 </html>

@@ -5,24 +5,6 @@ from backend.utils.http_entities import DataInput
 from backend.utils.response_constructor import generate_response, generate_response_fail_coefficients
 from backend.utils.util_entities import ApproximationMethods, ApproximationParameters, ErrorCodes
 
-# def calculate_coefficients(data: DataInput) -> List[Decimal]:
-#     n = len(data.x)
-#     sx = Decimal(sum(data.x))
-#     sy = Decimal(sum(data.y))
-#     sxx = sum(Decimal(x)*Decimal(x) for x in data.x)
-#     sxy = sum(Decimal(x) * Decimal(y) for x, y in zip(data.x, data.y))
-
-#     delta = sxx * n - sx * sx
-#     delta_1 = sxy * n - sx * sy
-#     delta_2 = sxx * sy - sx * sxy
-
-#     if delta == 0: return None
-        
-#     a = delta_1/delta
-#     b = delta_2/delta
-
-#     return [a, b]
-
 
 def linear_solve(data: DataInput):
     calculation_success = True

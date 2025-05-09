@@ -26,9 +26,9 @@ class ApproximationParameters():
         self.method=method
         self.coefficients=coefficients
         self.phi=phi
-        self.mse=0
-        self.coefficient_of_determination=0,
-        self.correlation_coefficient = None,
+        self.mse=-1
+        self.coefficient_of_determination=-1
+        self.correlation_coefficient = None
         self.e_dots=[]
         self.calculation_success=calculation_success
         self.errors=errors
@@ -43,7 +43,7 @@ class ApproximationParameters():
 
         coefficient_of_determination = calculate_determination_coefficient(self.data.x, self.data.y, self.phi)
         if coefficient_of_determination is None:
-            self.coefficient_of_determination=0
+            self.coefficient_of_determination=-1
             self.calculation_success=False
             self.errors.append(ErrorCodes.UNABLE_TO_CALCULATE_DETERMINATION)
         else: self.coefficient_of_determination = coefficient_of_determination

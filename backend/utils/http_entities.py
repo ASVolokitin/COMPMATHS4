@@ -1,7 +1,7 @@
 from decimal import Decimal
 from backend.utils.utils import generate_graph_points
 from pydantic import BaseModel, field_serializer
-from typing import Callable, List, Dict
+from typing import List
 
 class DataInput(BaseModel):
     x: List[Decimal]
@@ -38,15 +38,15 @@ class ResultOutput(BaseModel):
         
         return cls(
             coefficients=coefficients,
-            mse=str(mse),
+            mse=mse,
             x=data.x,
             y=data.y,
             x_for_graph=graph_info[0] if graph_info is not None else [],
             y_for_graph=graph_info[1] if graph_info is not None else [],
             phi_dots=[phi(x) for x in data.x] if phi is not None else [],
             e_dots=e_dots,
-            coefficient_of_determination=str(coefficient_of_determination),
-            calculation_success=str(calculation_success),
+            coefficient_of_determination=coefficient_of_determination,
+            calculation_success=calculation_success,
             best_approximation=False,
             errors=errors
         )
@@ -62,7 +62,7 @@ class ResultOutput(BaseModel):
             y_for_graph=[],
             phi_dots=[],
             e_dots=[],
-            coefficient_of_determination=0,
+            coefficient_of_determination=-1,
             calculation_success=False,
             best_approximation=False,
             errors=errors

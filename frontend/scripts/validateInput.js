@@ -16,7 +16,7 @@ export function validateInputs() {
 
             const msg = document.createElement('div');
             msg.className = 'error-message';
-            msg.textContent = 'Введите число';
+            msg.textContent = 'Enter a number';
             input.parentElement.appendChild(msg);
         }
     });

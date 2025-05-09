@@ -7,25 +7,6 @@ from backend.utils.response_constructor import generate_response, generate_respo
 from backend.utils.util_entities import ApproximationMethods, ApproximationParameters, ErrorCodes
 
 
-# def calculate_coefficients(data: DataInput) -> List[Decimal]:
-#     n = len(data.x)
-#     sx = Decimal(sum(data.x))
-#     sy = Decimal(sum(data.y))
-#     sxx = sum(Decimal(x)*Decimal(x) for x in data.x)
-#     sxy = sum(Decimal(x) * Decimal(y) for x, y in zip(data.x, data.y))
-
-#     delta = sxx * n - sx * sx
-#     delta_1 = sxy * n - sx * sy
-#     delta_2 = sxx * sy - sx * sxy
-
-#     if delta == 0: return None
-        
-#     a = delta_1/delta
-#     b = delta_2/delta
-
-#     return [a, b]
-
-
 def logarithmic_solve(data: DataInput):
     calculation_success = True
     errors = []
@@ -35,10 +16,10 @@ def logarithmic_solve(data: DataInput):
         calculation_success = False
         return generate_response_fail_coefficients(data=data, errors=errors)
     
-    log_x = list(map(math.log, data.x))
-    log_data = DataInput(x=log_x, y=data.y)
+    log_x = [x.ln() for x in data.x]
+    ln_data = DataInput(x=log_x, y=data.y)
 
-    coefficients = calculate_linear_coefficients(log_data)
+    coefficients = calculate_linear_coefficients(ln_data)
 
     if coefficients == None:
         calculation_success = False
@@ -46,8 +27,10 @@ def logarithmic_solve(data: DataInput):
         return generate_response_fail_coefficients(data=data, errors=errors)
     else:
         coefficients = [Decimal(a_i) for a_i in coefficients]
+        a = coefficients[1]
+        b = coefficients[0]
     
-    logarithmic_phi = lambda x: coefficients[0] + coefficients[1] * Decimal(math.log(x))
+    logarithmic_phi = lambda x: a + b * x.ln()
 
 
     parameters = ApproximationParameters(data=data,

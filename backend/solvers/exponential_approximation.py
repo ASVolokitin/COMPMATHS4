@@ -1,29 +1,10 @@
+from cmath import e
 from decimal import Decimal
-import math
 from typing import List
 from backend.utils.http_entities import DataInput
 from backend.utils.calculation_utils import calculate_linear_coefficients
 from backend.utils.response_constructor import generate_response, generate_response_fail_coefficients
 from backend.utils.util_entities import ApproximationMethods, ApproximationParameters, ErrorCodes
-
-
-# def calculate_coefficients(data: DataInput) -> List[Decimal]:
-#     n = len(data.x)
-#     sx = Decimal(sum(data.x))
-#     sy = Decimal(sum(data.y))
-#     sxx = sum(Decimal(x)*Decimal(x) for x in data.x)
-#     sxy = sum(Decimal(x) * Decimal(y) for x, y in zip(data.x, data.y))
-
-#     delta = sxx * n - sx * sx
-#     delta_1 = sxy * n - sx * sy
-#     delta_2 = sxx * sy - sx * sxy
-
-#     if delta == 0: return None
-        
-#     a = delta_1/delta
-#     b = delta_2/delta
-
-#     return [a, b]
 
 
 def exponential_solve(data: DataInput):
@@ -35,8 +16,8 @@ def exponential_solve(data: DataInput):
         calculation_success = False
         return generate_response_fail_coefficients(data=data, errors=errors)
     
-    log_y = list(map(math.log, data.y))
-    exp_data = DataInput(x=data.x, y=log_y)
+    ln_y = [y.ln() for y in data.y]
+    exp_data = DataInput(x=data.x, y=ln_y)
 
     coefficients = calculate_linear_coefficients(exp_data)
 
@@ -46,11 +27,12 @@ def exponential_solve(data: DataInput):
         return generate_response_fail_coefficients(data=data, errors=errors)
     else:
         coefficients = [Decimal(a_i) for a_i in coefficients]
+        a = coefficients[1].exp()
+        b = coefficients[0]
 
-    coefficients[0] = Decimal(math.exp(coefficients[0]))
 
-    exponential_phi = lambda x: coefficients[0] * Decimal(math.exp(coefficients[1] * x))
-
+    exponential_phi = lambda x: a * Decimal(e) ** (b * x)
+    
     parameters = ApproximationParameters(data=data,
                                          method=ApproximationMethods.EXPONENTIAL,
                                          coefficients=coefficients,
