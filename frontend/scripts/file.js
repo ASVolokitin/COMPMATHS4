@@ -1,3 +1,30 @@
+import { showModal } from './validateInput.js'
+
+// export function handleFileUpload(event) {
+//     const file = event.target.files[0];
+//     if (!file) return;
+
+//     const reader = new FileReader();
+//     reader.onload = function(e) {
+//         const content = e.target.result;
+//         const lines = content.trim().split('\n');
+//         const data = lines.map(line => line.replace(',', '.').trim().split(/[ ;\t]+/).map(Number));
+
+//         const validData = data.filter(pair => pair.length === 2 && !isNaN(pair[0]) && !isNaN(pair[1]));
+//         if (validData.length === 0) {
+//             alert("Incorrect input format");
+//             return;
+//         }
+
+//         console.log(data);
+//         console.log(validData);
+
+//         fillTableWithData(validData);
+//     };
+
+//     reader.readAsText(file);
+// }
+
 export function handleFileUpload(event) {
     const file = event.target.files[0];
     if (!file) return;
@@ -9,19 +36,31 @@ export function handleFileUpload(event) {
         const data = lines.map(line => line.replace(',', '.').trim().split(/[ ;\t]+/).map(Number));
 
         const validData = data.filter(pair => pair.length === 2 && !isNaN(pair[0]) && !isNaN(pair[1]));
+        console.log(content, validData);
         if (validData.length === 0) {
-            alert("Incorrect input format");
+            showModal("Incorrect input format");
+            event.target.value = "";
             return;
         }
 
-        console.log(data);
-        console.log(validData);
+        if (validData.length < 8) {
+            showModal("You need to provide at least 8 points");
+            event.target.value = "";
+            return;
+        }
+
+        if (validData.length > 12) {
+            showModal("You need to provide not more than 12 points");
+            event.target.value = "";
+            return;
+        }
 
         fillTableWithData(validData);
     };
 
     reader.readAsText(file);
 }
+
 
 function fillTableWithData(data) {
     

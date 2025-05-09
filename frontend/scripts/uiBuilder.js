@@ -110,6 +110,10 @@ export function createApproximationBlock(method, data) {
                 continue;
             }
 
+            if (typeof value === "boolean") {
+                formattedValue =  value ? "✅" : "❌";
+            }
+
             if (Array.isArray(formattedValue)) {
                 if (key.toLowerCase() === "errors") {
                     formattedValue = formattedValue.join('\n\n');

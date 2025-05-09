@@ -14,7 +14,7 @@ async function sendData() {
 
         if (isNaN(xi) || isNaN(yi)) {
             document.getElementById('mainContainer').classList.remove('has-result');
-            alert('Пожалуйста, заполните все поля корректными числами.');
+            alert('Please, fill all the fields with real numbers.');
             return;
         }
 
